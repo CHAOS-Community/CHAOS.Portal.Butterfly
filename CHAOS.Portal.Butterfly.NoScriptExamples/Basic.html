@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8" />
+		<title>Basic Butterfly example</title>
+		<script src="jquery-1.9.0.min.js"></script>
+		<script src="PortalClient.min.js"></script>
+		<script src="Butterfly.js"></script>
+	</head>
+	<body>
+		<h1>Basic Butterfly example</h1>
+
+		<input type="text" data-portalpath="" data-results="#SearchResults" data-accesspoint="00000000-0000-0000-0000-0000204E0000" data-searchfilter="m00000000-0000-0000-0000-000063c30000_da_all:('{0}')" data-searchbutton="#SearchButton"/>
+		<button id="SearchButton">Search</button>
+
+		<div id="SearchResults" data-details="#ItemDetails" data-pagesize="5" data-schema="00000000-0000-0000-0000-000063c30000" data-loadmore="#LoadMoreButton">
+			<div style="display: none;" data-template="">
+				<h2 data-template="Title"></h2>
+				<p data-template="Organization"></p>
+				<hr/>
+			</div>
+		</div>
+		<button id="LoadMoreButton" style="display: none;">Load more</button>
+
+		<div id="ItemDetails" style="display: none;">
+			<button data-close="">Close</button>
+			<h2 data-template="Title"></h2>
+			<p data-template="Organization"></p>
+			<div data-template="Description"></div>
+		</div>
+	</body>
+</html>
