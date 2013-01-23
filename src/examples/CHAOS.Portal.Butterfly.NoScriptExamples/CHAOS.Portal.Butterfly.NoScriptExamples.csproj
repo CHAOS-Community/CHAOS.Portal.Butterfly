@@ -57,15 +57,15 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\build\Butterfly.js">
+    <Content Include="..\..\..\build\Butterfly.js">
       <Link>Butterfly.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\lib\jquery-1.9.0.min.js">
+    <Content Include="..\..\..\lib\jquery-1.9.0.min.js">
       <Link>jquery-1.9.0.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\lib\PortalClient.min.js">
+    <Content Include="..\..\..\lib\PortalClient.min.js">
       <Link>PortalClient.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -84,7 +84,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\app\CHAOS.Portal.Butterfly\CHAOS.Portal.Butterfly.csproj">
+    <ProjectReference Include="..\..\app\CHAOS.Portal.Butterfly\CHAOS.Portal.Butterfly.csproj">
       <Project>{ed78bc28-2926-426e-9cb0-87069624cbc4}</Project>
       <Name>CHAOS.Portal.Butterfly</Name>
     </ProjectReference>

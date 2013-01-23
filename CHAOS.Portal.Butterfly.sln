@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Butterfly", "src\app\CHAOS.Portal.Butterfly\CHAOS.Portal.Butterfly.csproj", "{ED78BC28-2926-426E-9CB0-87069624CBC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Butterfly.NoScriptExamples", "CHAOS.Portal.Butterfly.NoScriptExamples\CHAOS.Portal.Butterfly.NoScriptExamples.csproj", "{7AEA62A5-AE41-48BC-98B9-7ABB9F51822D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CHAOS.Portal.Butterfly.NoScriptExamples", "src\examples\CHAOS.Portal.Butterfly.NoScriptExamples\CHAOS.Portal.Butterfly.NoScriptExamples.csproj", "{7AEA62A5-AE41-48BC-98B9-7ABB9F51822D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
