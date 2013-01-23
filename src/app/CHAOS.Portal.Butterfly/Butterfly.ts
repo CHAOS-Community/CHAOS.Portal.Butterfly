@@ -85,6 +85,8 @@ module CHAOS.Portal.Butterfly
 			this._resultsContainer.children("[data-template]").remove();
 			this._query = this._filter.replace("{0}", query);
 			this._nextPageIndex = 0;
+
+			this.HideDetails();
 			
 			this.LoadMore();
 		}
