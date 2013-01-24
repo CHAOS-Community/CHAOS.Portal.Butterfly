@@ -77,6 +77,10 @@
       <Link>img\glyphicons-halflings.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\lib\bootstrap\js\bootstrap.min.js">
+      <Link>bootstrap.min.js</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\..\lib\PortalClient.min.js">
       <Link>PortalClient.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -131,6 +135,7 @@
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(TargetDir)PortalClient.min.js" "$(ProjectDir)PortalClient.min.js"
 copy /y "$(TargetDir)Butterfly.js" "$(ProjectDir)Butterfly.js"
+copy /y "$(TargetDir)bootstrap.min.js" "$(ProjectDir)bootstrap.min.js"
 copy /y "$(TargetDir)css\bootstrap.min.css" "$(ProjectDir)css\bootstrap.min.css"
 copy /y "$(TargetDir)css\bootstrap-responsive.min.css" "$(ProjectDir)css\bootstrap-responsive.min.css"
 copy /y "$(TargetDir)img\glyphicons-halflings.png" "$(ProjectDir)img\glyphicons-halflings.png"
