@@ -3,17 +3,22 @@
 
 module CHAOS.Portal.Butterfly
 {
-	$(document).ready(() => $("input[type=text][data-portalpath]").each((index, element) => $(element).data("searchhelper", new SearchHelper(element))));
+	$(document).ready(() => $("form[data-portalpath]").each((index, element) => $(element).data("searchhelper", new SearchHelper(element))));
 
 	class SearchHelper
 	{
 		private _client:CHAOS.Portal.Client.PortalClient;
+		private _searchForm:JQuery;
 		private _searchField:JQuery;
 		private _resultsContainer:JQuery;
 		private _resultsTemplate:JQuery;
+		private _resultsSeperator: JQuery;
 		private _loadMoreButton:JQuery;
 		private _detailsView:JQuery;
 		private _closeDetailsButton:JQuery;
+
+		private _resultsCountLabel:JQuery;
+		private _resultsTotalCountLabel:JQuery;
 
 		private _accessPoint:string;
 		private _filter:string;
@@ -24,33 +29,33 @@ module CHAOS.Portal.Butterfly
 		private _nextPageIndex:number;
 		private _canLoadMore:bool = false;
 
-		constructor(searchField: Element)
+		constructor(searchForm: Element)
 		{
-			this._searchField = $(searchField);
-			this._client = new CHAOS.Portal.Client.PortalClient(this._searchField.data("portalpath"));
-			this._resultsContainer = $(this._searchField.data("results"));
+			this._searchForm = $(searchForm);
+			this._searchField = this._searchForm.find("input[type=text]").first();
+			this._resultsContainer = $(this._searchForm.data("results"));
 			this._resultsTemplate = this._resultsContainer.children("[data-template]").first().detach().show();
+			this._resultsSeperator = this._resultsContainer.children("[data-seperator]").first().detach().show();
 			this._loadMoreButton = $(this._resultsContainer.data("loadmore"));
 			this._detailsView = $(this._resultsContainer.data("details"));
 			this._closeDetailsButton = this._detailsView.find("[data-close]");
-			this._accessPoint = this._searchField.data("accesspoint");
-			this._filter = this._searchField.data("searchfilter");
+
+			this._resultsCountLabel = $("[data-resultscount=" + this._resultsContainer.attr('id') + "]");
+			this._resultsTotalCountLabel = $("[data-resultstotalcount=" + this._searchForm.attr('id') + "]");
+
+			this._client = new CHAOS.Portal.Client.PortalClient(this._searchForm.data("portalpath"));
+			this._accessPoint = this._searchForm.data("accesspoint");
+			this._filter = this._searchForm.data("searchfilter");
 			this._pageSize = this._resultsContainer.data("pagesize");
 			this._schemaGUID = this._resultsContainer.data("schema");
 
 			if(!this._filter)
 				this._filter = "{0}";
 
-			this._searchField.keypress(event =>
-			{
-				if(event.which == 13)
-					this.Search(this._searchField.val());
-			});
-
-			$(this._searchField.data("searchbutton")).click(event =>
+			this._searchForm.submit(event =>
 			{
 				event.preventDefault();
-				this.Search(this._searchField.val());
+					this.Search(this._searchField.val());
 			});
 
 			this._loadMoreButton.click(event =>
@@ -82,9 +87,11 @@ module CHAOS.Portal.Butterfly
 
 		private Search(query:string):void
 		{ 
-			this._resultsContainer.children("[data-template]").remove();
+			this._resultsContainer.children("[data-template], [data-seperator]").remove();
 			this._query = this._filter.replace("{0}", query);
 			this._nextPageIndex = 0;
+			this._resultsCountLabel.text(0);
+			this._resultsTotalCountLabel.text(0);
 
 			this.HideDetails();
 			
@@ -102,6 +109,10 @@ module CHAOS.Portal.Butterfly
 					console.log(response.Error.Message);
 					return;
 				}
+
+				this._resultsCountLabel.text((this._nextPageIndex - 1) * this._pageSize + response.Result.Count);
+				this._resultsTotalCountLabel.text(response.Result.TotalCount);
+
 				this.ShowResults(response.Result.Results);
 
 				if(Math.ceil(response.Result.TotalCount / this._pageSize) > this._nextPageIndex)
@@ -112,6 +123,7 @@ module CHAOS.Portal.Butterfly
 
 		private ShowResults(results:any[]): void
 		{
+			var hasResults = this._resultsContainer.children("[data-template]").length != 0;
 			results.forEach(r =>
 			{
 				if(!r.Metadatas)
@@ -126,6 +138,11 @@ module CHAOS.Portal.Butterfly
 
 					item.click(() => this.ShowDetails(m.MetadataXML));
 
+					if (hasResults)
+						this._resultsContainer.append(this._resultsSeperator.clone());
+					else
+						hasResults = true;
+					
 					this._resultsContainer.append(item);
 				});
 			});
@@ -150,7 +167,7 @@ module CHAOS.Portal.Butterfly
 
 		private ApplyDataToTemplate(template:JQuery, data:string):JQuery
 		{
-			template.children("[data-template]").each((index, element) =>
+			template.find("[data-template]").each((index, element) =>
 			{
 				$(element).text($(data).find($(element).data("template")).text());
 			});

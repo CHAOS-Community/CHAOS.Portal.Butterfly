@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8" />
+		<title>Butterfly example</title>
+		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen"/>
+		<link href="css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+		<script src="PortalClient.min.js"></script>
+		<script src="Butterfly.js"></script>
+		<style type="text/css">
+			.SearchResult 
+			{
+				cursor: pointer;
+				margin: 0px;
+				padding-left: 15px;
+				padding-bottom: 5px;
+			}
+
+			.SearchResult:hover
+			{
+				background-color: whitesmoke;
+			}
+
+			hr 
+			{
+				margin: 0px;
+				margin-top: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="span9">
+					<h1>Butterfly example with Bootstrap</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span3">
+					<br/>
+					<form id="Search" class="form-search" data-portalpath="YouAPI" data-results="#SearchResults" data-accesspoint="00000000-0000-0000-0000-0000204E0000" data-searchfilter="m00000000-0000-0000-0000-000063c30000_da_all:('{0}')">
+						<div class="input-append">
+							<input type="text" class="span2 search-query" placeholder="Search with CHAOS" />
+							<button type="submit" class="btn btn-primary">Search</button>
+						</div>
+					</form>
+					<i class="icon-list"></i> Showing <span data-resultscount="SearchResults">0</span> of <span data-resultstotalcount="Search">0</span> results
+				</div>
+				<div class="span6">
+					<div id="SearchResults" data-details="#ItemDetails" data-pagesize="5" data-schema="00000000-0000-0000-0000-000063c30000" data-loadmore="#LoadMoreButton">
+						<div class="SearchResult" style="display: none;" data-template="">
+							<h3 data-template="Title"></h3>
+							<p><i class="icon-home"></i> <span data-template="Organization"></span></p>
+						</div>
+						<div style="display: none;" data-seperator="">
+							<hr/>
+						</div>
+					</div>
+					<br/>
+					<button class="btn btn-block" id="LoadMoreButton" style="display: none;"><i class="icon-chevron-down"></i> Load more <i class="icon-chevron-down"></i></button>
+
+					<div id="ItemDetails" style="display: none;">
+						<button class="btn btn-danger pull-right" data-close=""><i class="icon-remove icon-white"></i></button>
+						<h2 data-template="Title"></h2>
+						<p><i class="icon-home"></i> <span data-template="Organization"></span></p>
+						<div data-template="Description"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
