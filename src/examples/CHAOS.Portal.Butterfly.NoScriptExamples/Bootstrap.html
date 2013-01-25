@@ -61,10 +61,11 @@
 					</div>
 				</div>
 				<div class="span6">
-					<div id="SearchResults" data-details="#ItemDetails" data-pagesize="5" data-schema="00000000-0000-0000-0000-000063c30000" data-loadmore="#LoadMoreButton">
+					<div id="SearchResults" data-details="#ItemDetails" data-pagesize="5" data-defaultschema="00000000-0000-0000-0000-000063c30000" data-loadmore="#LoadMoreButton">
 						<div class="SearchResult" style="display: none;" data-template="">
-							<h3 data-template="Title"></h3>
-							<p><i class="icon-home"></i> <span data-template="Organization"></span></p>
+							<img data-template-file="JPEG-140h"/>
+							<h3 data-template-metadata="Title"></h3>
+							<p><i class="icon-home"></i> <span data-template-metadata="Organization"></span></p>
 						</div>
 						<div style="display: none;" data-seperator="">
 							<hr/>
@@ -75,10 +76,10 @@
 
 					<div id="ItemDetails" style="display: none;">
 						<button class="btn btn-danger pull-right" data-close=""><i class="icon-remove icon-white"></i></button>
-						<h2 data-template="Title"></h2>
-						<p><i class="icon-home"></i> <span data-template="Organization"></span></p>
-						<p><i class="icon-info-sign"></i> <a href="#" data-template="Identifier" target="_blank"><span data-template="RightsDescription"></span></a></p>
-						<div data-template="Description"></div>
+						<h2 data-template-metadata="Title"></h2>
+						<p><i class="icon-home"></i> <span data-template-metadata="Organization"></span></p>
+						<p><i class="icon-info-sign"></i> <a href="#" data-template-metadata="Identifier" target="_blank"><span data-template-metadata="RightsDescription"></span></a></p>
+						<div data-template-metadata="Description"></div>
 					</div>
 				</div>
 			</div>

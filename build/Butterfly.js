@@ -2,11 +2,19 @@ var CHAOS;
 (function (CHAOS) {
     (function (Portal) {
         (function (Butterfly) {
+            var _this = this;
             $(document).ready(function () {
                 return $("form[data-portalpath]").each(function (index, element) {
                     return $(element).data("searchhelper", new SearchHelper(element));
                 });
             });
+            if(!Array.prototype.forEach) {
+                Array.prototype.forEach = function (callbackfn, thisArg) {
+                    for(var i = 0, len = _this.length; i < len; ++i) {
+                        callbackfn.call(thisArg, _this[i], i, _this);
+                    }
+                };
+            }
             var SearchHelper = (function () {
                 function SearchHelper(searchForm) {
                     var _this = this;
@@ -25,7 +33,8 @@ var CHAOS;
                     this._accessPoint = this._searchForm.data("accesspoint");
                     this._filter = this._searchForm.data("searchfilter");
                     this._pageSize = this._resultsContainer.data("pagesize");
-                    this._schemaGUID = this._resultsContainer.data("schema");
+                    this._resultsDefaultSchemaGUID = this._resultsContainer.data("defaultschema");
+                    this._detailsDefaultSchemaGUID = this._detailsView.data("defaultschema") ? this._detailsView.data("defaultschema") : this._resultsDefaultSchemaGUID;
                     if(!this._filter) {
                         this._filter = "{0}";
                     }
@@ -77,34 +86,26 @@ var CHAOS;
                         if(Math.ceil(response.Result.TotalCount / _this._pageSize) > _this._nextPageIndex) {
                             _this.SetCanLoadMore(true);
                         }
-                    }, this._query, null, this._accessPoint, this._nextPageIndex++, this._pageSize, true, false, false, false, this._client);
+                    }, this._query, null, this._accessPoint, this._nextPageIndex++, this._pageSize, true, true, false, false, this._client);
                 };
                 SearchHelper.prototype.ShowResults = function (results) {
                     var _this = this;
                     var hasResults = this._resultsContainer.children("[data-template]").length != 0;
                     results.forEach(function (r) {
-                        if(!r.Metadatas) {
-                            return;
-                        }
-                        r.Metadatas.forEach(function (m) {
-                            if(m.MetadataSchemaGUID != _this._schemaGUID) {
-                                return;
-                            }
-                            var item = _this.ApplyDataToTemplate(_this._resultsTemplate.clone(), m.MetadataXML);
-                            item.click(function () {
-                                return _this.ShowDetails(m.MetadataXML);
-                            });
-                            if(hasResults) {
-                                _this._resultsContainer.append(_this._resultsSeperator.clone());
-                            } else {
-                                hasResults = true;
-                            }
-                            _this._resultsContainer.append(item);
+                        var item = _this.ApplyDataToTemplate(_this._resultsTemplate.clone(), r, _this._resultsDefaultSchemaGUID);
+                        item.click(function () {
+                            return _this.ShowDetails(r);
                         });
+                        if(hasResults) {
+                            _this._resultsContainer.append(_this._resultsSeperator.clone());
+                        } else {
+                            hasResults = true;
+                        }
+                        _this._resultsContainer.append(item);
                     });
                 };
-                SearchHelper.prototype.ShowDetails = function (metadata) {
-                    this.ApplyDataToTemplate(this._detailsView, metadata);
+                SearchHelper.prototype.ShowDetails = function (object) {
+                    this.ApplyDataToTemplate(this._detailsView, object, this._detailsDefaultSchemaGUID);
                     this._detailsView.show();
                     this._resultsContainer.hide();
                     this._loadMoreButton.hide();
@@ -114,19 +115,63 @@ var CHAOS;
                     this._resultsContainer.show();
                     this.SetCanLoadMore(this._canLoadMore);
                 };
-                SearchHelper.prototype.ApplyDataToTemplate = function (template, data) {
-                    template.find("[data-template]").each(function (index, element) {
-                        var targetedData = $(data).find($(element).data("template")).text();
+                SearchHelper.prototype.ApplyDataToTemplate = function (template, object, defaultSchemaGUID) {
+                    if(object.Metadatas) {
+                        this.ApplyMetadataToTemplate(template, object.Metadatas, defaultSchemaGUID);
+                    }
+                    if(object.Files) {
+                        this.ApplyFileDataToTemplate(template, object.Files);
+                    }
+                    return template;
+                };
+                SearchHelper.prototype.ApplyMetadataToTemplate = function (template, metadatas, defaultSchemaGUID) {
+                    var defaultMetadata = null;
+                    metadatas.forEach(function (m) {
+                        if(m.MetadataSchemaGUID == defaultSchemaGUID) {
+                            defaultMetadata = m.MetadataXML;
+                        }
+                    });
+                    if(defaultMetadata) {
+                        template.find("[data-template-metadata]").each(function (index, element) {
+                            var targetedData = $(defaultMetadata).find($(element).data("template-metadata")).text();
+                            if($(element).is("a")) {
+                                $(element).attr("href", targetedData);
+                            } else {
+                                if($(element).is("img")) {
+                                    $(element).attr("src", targetedData);
+                                } else {
+                                    if($(element).is("input")) {
+                                        $(element).val(targetedData);
+                                    } else {
+                                        $(element).text(targetedData);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    return template;
+                };
+                SearchHelper.prototype.ApplyFileDataToTemplate = function (template, files) {
+                    template.find("[data-template-file]").each(function (index, element) {
+                        var targetFile = null;
+                        files.forEach(function (f) {
+                            if(targetFile == null && f.Format == $(element).data("template-file")) {
+                                targetFile = f;
+                            }
+                        });
+                        if(targetFile == null) {
+                            return;
+                        }
                         if($(element).is("a")) {
-                            $(element).attr("href", targetedData);
+                            $(element).attr("href", targetFile.URL);
                         } else {
                             if($(element).is("img")) {
-                                $(element).attr("src", targetedData);
+                                $(element).attr("src", targetFile.URL);
                             } else {
                                 if($(element).is("input")) {
-                                    $(element).val(targetedData);
+                                    $(element).val(targetFile.OriginalFilename);
                                 } else {
-                                    $(element).text(targetedData);
+                                    $(element).text(targetFile.OriginalFilename);
                                 }
                             }
                         }

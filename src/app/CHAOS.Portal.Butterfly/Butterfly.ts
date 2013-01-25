@@ -5,6 +5,17 @@ module CHAOS.Portal.Butterfly
 {
 	$(document).ready(() => $("form[data-portalpath]").each((index, element) => $(element).data("searchhelper", new SearchHelper(element))));
 
+	if (!Array.prototype.forEach)
+	{
+		Array.prototype.forEach = (callbackfn: (value: {}, index: number, array: {}[]) => void , thisArg?: any): void =>
+		{
+			for(var i = 0, len = this.length; i < len; ++i)
+			{
+				callbackfn.call(thisArg, this[i], i, this);
+			}
+		}
+	}
+
 	class SearchHelper
 	{
 		private _client:CHAOS.Portal.Client.PortalClient;
@@ -23,7 +34,8 @@ module CHAOS.Portal.Butterfly
 		private _accessPoint:string;
 		private _filter:string;
 		private _query:string;
-		private _schemaGUID:string;
+		private _resultsDefaultSchemaGUID:string;
+		private _detailsDefaultSchemaGUID:string;
 		private _pageSize:number;
 
 		private _nextPageIndex:number;
@@ -47,7 +59,8 @@ module CHAOS.Portal.Butterfly
 			this._accessPoint = this._searchForm.data("accesspoint");
 			this._filter = this._searchForm.data("searchfilter");
 			this._pageSize = this._resultsContainer.data("pagesize");
-			this._schemaGUID = this._resultsContainer.data("schema");
+			this._resultsDefaultSchemaGUID = this._resultsContainer.data("defaultschema");
+			this._detailsDefaultSchemaGUID = this._detailsView.data("defaultschema") ? this._detailsView.data("defaultschema") : this._resultsDefaultSchemaGUID;
 
 			if(!this._filter)
 				this._filter = "{0}";
@@ -118,7 +131,7 @@ module CHAOS.Portal.Butterfly
 				if(Math.ceil(response.Result.TotalCount / this._pageSize) > this._nextPageIndex)
 					this.SetCanLoadMore(true);
 
-			}, this._query, null, this._accessPoint, this._nextPageIndex++, this._pageSize, true, false, false, false, this._client);
+			}, this._query, null, this._accessPoint, this._nextPageIndex++, this._pageSize, true, true, false, false, this._client);
 		}
 
 		private ShowResults(results:any[]): void
@@ -126,31 +139,22 @@ module CHAOS.Portal.Butterfly
 			var hasResults = this._resultsContainer.children("[data-template]").length != 0;
 			results.forEach(r =>
 			{
-				if(!r.Metadatas)
-					return;
+				var item = this.ApplyDataToTemplate(this._resultsTemplate.clone(), r, this._resultsDefaultSchemaGUID);
 
-				r.Metadatas.forEach(m =>
-				{
-					if(m.MetadataSchemaGUID != this._schemaGUID)
-						return;
+				item.click(() => this.ShowDetails(r));
 
-					var item = this.ApplyDataToTemplate(this._resultsTemplate.clone(), m.MetadataXML);
-
-					item.click(() => this.ShowDetails(m.MetadataXML));
-
-					if (hasResults)
-						this._resultsContainer.append(this._resultsSeperator.clone());
-					else
-						hasResults = true;
+				if (hasResults)
+					this._resultsContainer.append(this._resultsSeperator.clone());
+				else
+					hasResults = true;
 					
-					this._resultsContainer.append(item);
-				});
+				this._resultsContainer.append(item);
 			});
 		}
 
-		private ShowDetails(metadata:string):void
+		private ShowDetails(object:any):void
 		{
-			this.ApplyDataToTemplate(this._detailsView, metadata);
+			this.ApplyDataToTemplate(this._detailsView, object, this._detailsDefaultSchemaGUID);
 
 			this._detailsView.show();
 			this._resultsContainer.hide();
@@ -165,20 +169,69 @@ module CHAOS.Portal.Butterfly
 			this.SetCanLoadMore(this._canLoadMore);
 		}
 
-		private ApplyDataToTemplate(template:JQuery, data:string):JQuery
+		private ApplyDataToTemplate(template:JQuery, object:any, defaultSchemaGUID:string):JQuery
 		{
-			template.find("[data-template]").each((index, element) =>
-			{
-				var targetedData = $(data).find($(element).data("template")).text();
+			if (object.Metadatas)
+				this.ApplyMetadataToTemplate(template, object.Metadatas, defaultSchemaGUID)
+			
+			if(object.Files)
+				this.ApplyFileDataToTemplate(template, object.Files)
 
-				if($(element).is("a"))
-					$(element).attr("href", targetedData);
-				else if($(element).is("img"))
-					$(element).attr("src", targetedData);
-				else if($(element).is("input"))
-					$(element).val(targetedData);
-				else
-					$(element).text(targetedData);
+			return template;
+		}
+
+		private ApplyMetadataToTemplate(template: JQuery, metadatas: any[], defaultSchemaGUID: string):JQuery
+		{ 
+			var defaultMetadata:string = null;
+
+			metadatas.forEach(m =>
+			{
+				if(m.MetadataSchemaGUID == defaultSchemaGUID)
+					defaultMetadata = m.MetadataXML;
+			});
+
+			if (defaultMetadata)
+			{
+				template.find("[data-template-metadata]").each((index, element) =>
+				{
+					var targetedData = $(defaultMetadata).find($(element).data("template-metadata")).text();
+
+					if ($(element).is("a"))
+						$(element).attr("href", targetedData);
+					else if ($(element).is("img"))
+						$(element).attr("src", targetedData);
+					else if ($(element).is("input"))
+						$(element).val(targetedData);
+					else
+						$(element).text(targetedData);
+				});
+			}
+
+			return template;
+		}
+
+		private ApplyFileDataToTemplate(template: JQuery, files: any[]):JQuery
+		{
+			template.find("[data-template-file]").each((index, element) =>
+			{
+				var targetFile: any = null;
+
+				files.forEach(f =>
+				{
+					if(targetFile == null && f.Format == $(element).data("template-file"))
+						targetFile = f;
+				});
+
+				if(targetFile == null) return;
+
+				if ($(element).is("a"))
+						$(element).attr("href", targetFile.URL);
+					else if ($(element).is("img"))
+						$(element).attr("src", targetFile.URL);
+					else if ($(element).is("input"))
+						$(element).val(targetFile.OriginalFilename);
+					else
+						$(element).text(targetFile.OriginalFilename);
 			});
 
 			return template;
