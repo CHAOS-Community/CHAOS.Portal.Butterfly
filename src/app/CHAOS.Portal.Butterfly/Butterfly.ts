@@ -196,6 +196,12 @@ module CHAOS.Portal.Butterfly
 				{
 					var targetedData = $(defaultMetadata).find($(element).data("template-metadata")).text();
 
+					if (targetedData == null)
+					{
+						$(element).hide();
+						return;
+					}
+
 					if ($(element).is("a"))
 						$(element).attr("href", targetedData);
 					else if ($(element).is("img"))
@@ -222,7 +228,11 @@ module CHAOS.Portal.Butterfly
 						targetFile = f;
 				});
 
-				if(targetFile == null) return;
+				if (targetFile == null)
+				{
+					$(element).hide();
+					return;
+				}
 
 				if ($(element).is("a"))
 						$(element).attr("href", targetFile.URL);

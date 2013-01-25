@@ -1,0 +1,46 @@
+﻿.SearchResult 
+{
+	cursor: pointer;
+	margin: 0px;
+	padding-left: 15px;
+	padding-bottom: 5px;
+}
+
+.SearchResult:hover
+{
+	background-color: whitesmoke;
+}
+
+.SearchResult img 
+{
+	margin-right: 10px;
+}
+
+.SearchResult h3 
+{
+	margin: 0px;
+}
+
+#ItemDetails img 
+{
+	max-width: 350px;
+	max-height: 350px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+hr 
+{
+	margin: 0px;
+	margin-top: 5px;
+}
+
+.affix
+{
+	top: 20px;
+}
+
+.affix-top #TopLink
+{
+	display: none;
+}

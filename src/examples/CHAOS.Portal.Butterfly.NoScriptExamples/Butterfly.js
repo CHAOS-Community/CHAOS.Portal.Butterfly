@@ -134,6 +134,10 @@ var CHAOS;
                     if(defaultMetadata) {
                         template.find("[data-template-metadata]").each(function (index, element) {
                             var targetedData = $(defaultMetadata).find($(element).data("template-metadata")).text();
+                            if(targetedData == null) {
+                                $(element).hide();
+                                return;
+                            }
                             if($(element).is("a")) {
                                 $(element).attr("href", targetedData);
                             } else {
@@ -160,6 +164,7 @@ var CHAOS;
                             }
                         });
                         if(targetFile == null) {
+                            $(element).hide();
                             return;
                         }
                         if($(element).is("a")) {
