@@ -61,26 +61,6 @@
       <Link>Butterfly.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\lib\bootstrap\css\bootstrap-responsive.min.css">
-      <Link>css\bootstrap-responsive.min.css</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\..\lib\bootstrap\css\bootstrap.min.css">
-      <Link>css\bootstrap.min.css</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\..\lib\bootstrap\img\glyphicons-halflings-white.png">
-      <Link>img\glyphicons-halflings-white.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\..\lib\bootstrap\img\glyphicons-halflings.png">
-      <Link>img\glyphicons-halflings.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\..\lib\bootstrap\js\bootstrap.min.js">
-      <Link>bootstrap.min.js</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\..\lib\PortalClient.min.js">
       <Link>PortalClient.min.js</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -134,12 +114,7 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PostBuildEvent>copy /y "$(TargetDir)PortalClient.min.js" "$(ProjectDir)PortalClient.min.js"
-copy /y "$(TargetDir)Butterfly.js" "$(ProjectDir)Butterfly.js"
-copy /y "$(TargetDir)bootstrap.min.js" "$(ProjectDir)bootstrap.min.js"
-copy /y "$(TargetDir)css\bootstrap.min.css" "$(ProjectDir)css\bootstrap.min.css"
-copy /y "$(TargetDir)css\bootstrap-responsive.min.css" "$(ProjectDir)css\bootstrap-responsive.min.css"
-copy /y "$(TargetDir)img\glyphicons-halflings.png" "$(ProjectDir)img\glyphicons-halflings.png"
-copy /y "$(TargetDir)img\glyphicons-halflings-white.png" "$(ProjectDir)img\glyphicons-halflings-white.png"</PostBuildEvent>
+copy /y "$(TargetDir)Butterfly.js" "$(ProjectDir)Butterfly.js"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

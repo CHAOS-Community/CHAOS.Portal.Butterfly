@@ -169,7 +169,16 @@ module CHAOS.Portal.Butterfly
 		{
 			template.find("[data-template]").each((index, element) =>
 			{
-				$(element).text($(data).find($(element).data("template")).text());
+				var targetedData = $(data).find($(element).data("template")).text();
+
+				if($(element).is("a"))
+					$(element).attr("href", targetedData);
+				else if($(element).is("img"))
+					$(element).attr("src", targetedData);
+				else if($(element).is("input"))
+					$(element).val(targetedData);
+				else
+					$(element).text(targetedData);
 			});
 
 			return template;
